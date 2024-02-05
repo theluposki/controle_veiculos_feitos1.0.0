@@ -1,0 +1,56 @@
+@import url("assets/fonts_RemixIcon/remixicon.css");
+
+:root {
+  font-family: sans-serif;
+  font-size: 62.5%;
+  line-height: 24px;
+  font-weight: 400;
+
+  --dark: #212121;
+  --dark2: #323232;
+  --dark3: #434343;
+  --dark4: #545454;
+  --dark5: #656565;
+
+  --white: #fff;
+  --white2: #f7f7f7;
+  --white3: #eee;
+  --white4: #e6e6e6;
+  --white5: #ddd;
+
+  --silver: #d5d5d5;
+  --silver2: #c3c3c3;
+  --silver3: #b3b3b3;
+
+  --primary: #47beff;
+
+  --danger: #ff1f10;
+  --danger-s: #ff8f87;
+  --success: #04ff8a;
+  --success-s: #e1fff1;
+  --alert: #fedf32;
+  --alert-s: #fff9db;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+
+  -webkit-touch-callout: none;
+  -webkit-text-size-adjust: none;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-user-select: none;
+  -webkit-user-drag: none;
+  user-select: none;
+
+  outline: none;
+}
