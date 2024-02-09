@@ -1,6 +1,9 @@
 <script setup>
 import { ref, onMounted } from "vue";
+import { useRouter } from "vue-router";
 import { db } from "../database/dexie.js";
+
+const { push } = useRouter();
 
 const marca = ref(null);
 const placa = ref(null);
@@ -21,6 +24,10 @@ onMounted(async () => {
     generateCSVContent();
   }
 })
+
+const setViewDetails = (id) => {
+  push(`/ViewDetails/${id}`)
+}
 
 async function getDataDoDia() {
   const hoje = new Date();
@@ -99,7 +106,7 @@ const formatDate = (data) => {
     </div>
 
     <ul class="list" v-if="listOfTheDay.length > 0">
-      <li class="item-list" v-for="item in listOfTheDay" :key="item.id">
+      <li class="item-list" v-for="item in listOfTheDay" :key="item.id" @click="setViewDetails(item.id)">
         <span class="marca">{{item.marca}}</span>
         <span class="placa">{{item.placa}}</span>
         <span class="qtd-peca">{{item.qtdPecas}}</span>
@@ -220,6 +227,11 @@ const formatDate = (data) => {
   --font-size-span: 1.4rem;
   --font-size-before: 1rem;
   --color-before: var(--dark4);
+  cursor: pointer;
+}
+
+.item-list:active {
+  scale: .95;
 }
 
 .item-list > span {
