@@ -14,9 +14,7 @@ onMounted(async () => {
 
 const getOneById = async () => {
   try {
-    console.log(params.id)
     const data = await db.dados.get(Number(params.id));
-    console.log(data)
     currentVehicle.value = data;
   } catch (error) {
     console.error(`Erro ao obter dados por ID ${id}:`, error);
@@ -37,18 +35,26 @@ async function deleteDataById(id) {
   }
 }
 
+const formatDate = (data) => {
+  return new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(new Date(data));
+}
+
+
 </script>
 
 <template>
   <div class="viewDetails">
-    <div class="info">
+    <div class="info" v-if="currentVehicle.marca">
       <span>Marca: <b>{{ currentVehicle.marca }}</b></span><br>
       <span>Placa: <b>{{ currentVehicle.placa }}</b></span><br>
       <span>Quantidade de Peças: <b>{{ currentVehicle.qtdPecas }}</b></span><br>
-      <span>Data: <b>{{ currentVehicle.data }}</b></span><br>
+      <span>Data: <b>{{ formatDate(currentVehicle.data) }}</b></span><br>
     </div>
 
     <div class="actions">
+      <button class="btn btn-update">
+        Editar
+      </button>
       <button class="btn btn-del" @click="deleteDataById(currentVehicle.id)">
         deletar
       </button>
@@ -61,22 +67,31 @@ async function deleteDataById(id) {
   padding: 24px;
 }
 
+.info > span {
+  font-size: 1.6rem;
+}
+
 .actions {
   padding: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .btn {
   --height-inputs-buttons: 45px;
   --height-inputs: 60px;
-  border: solid 1px var(--dark);
+  border: solid 1px transparent;
   --width-btn: var(--height-inputs-buttons);
   min-width: var(--width-btn);
-  padding: 8px 16px;
+  padding: 4px 16px;
   min-height: var(--height-inputs-buttons);
   max-height: var(--height-inputs-buttons);
   font-size: 2rem;
+  font-weight: bold;
   border-radius: 4px;
 
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
   background-color: var(--dark);
   color: var(--white);
 }
@@ -93,5 +108,10 @@ async function deleteDataById(id) {
 
 .btn-del {
   background-color: var(--danger);
+}
+
+.btn-update {
+  background-color: var(--alert);
+  color: var(--dark);
 }
 </style>
