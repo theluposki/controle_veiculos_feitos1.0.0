@@ -97,7 +97,7 @@ const formatDate = (data) => {
       Nenhum veículo adicionado.
     </div>
 
-    <div class="btnShared">
+    <div class="btnShared" @click="shareOnWhatsApp">
       <i class="ri-share-forward-2-line"></i>
     </div>
   </div>
