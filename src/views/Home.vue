@@ -28,7 +28,7 @@ async function getTotalSemanal() {
 
   const results = await db.dados
     .where('data')
-    .between(umaSemanaAtras.getTime(), hoje.getTime())
+    .between(formatDate(umaSemanaAtras), formatDate(hoje))
     .toArray();
 
   return results.length;
@@ -40,7 +40,7 @@ async function getTotalMensal() {
 
   const results = await db.dados
     .where('data')
-    .aboveOrEqual(primeiroDiaMes.getTime())
+    .aboveOrEqual(formatDate(primeiroDiaMes))
     .toArray();
 
   return results.length;
@@ -51,7 +51,7 @@ async function getTotalDiario() {
 
   const results = await db.dados
     .where('data')
-    .aboveOrEqual(hoje.setHours(0, 0, 0, 0))
+    .aboveOrEqual(formatDate(hoje))
     .toArray();
 
   return results.length;
@@ -63,10 +63,14 @@ async function getTotalAnual() {
 
   const results = await db.dados
     .where('data')
-    .aboveOrEqual(primeiroDiaAno.getTime())
+    .aboveOrEqual(formatDate(primeiroDiaAno))
     .toArray();
 
   return results.length;
+}
+
+function formatDate(date) {
+  return `${('0' + date.getDate()).slice(-2)}/${('0' + (date.getMonth() + 1)).slice(-2)}/${date.getFullYear()}`;
 }
 </script>
 
@@ -81,6 +85,7 @@ async function getTotalAnual() {
     </div>
   </div>
 </template>
+
 
 <style scoped>
 .home {

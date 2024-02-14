@@ -7,7 +7,20 @@ const routes = [
   { path: "/VehicleCompletion", component: () => import("./views/VehicleCompletion.vue") },
   { path: "/ViewDetails/:id", component: () => import("./views/viewDetails.vue") },
   { path: "/SearchVehicle", component: () => import("./views/SearchVehicle.vue") },
-  { path: "/about", component: () => import("./views/About.vue") },
+  { 
+    path: "/about", 
+    component: () => import("./views/About.vue"),
+    children: [
+      {
+        path: "",
+        component: () => import("./views/About/info.vue")
+      },
+      {
+        path: "config",
+        component: () => import("./views/About/config.vue")
+      },
+    ]
+  },
 ];
 
 export const router = createRouter({

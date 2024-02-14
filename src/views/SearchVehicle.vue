@@ -14,11 +14,12 @@ onMounted(async () => {
 ////////
 
 function generateCSVContent() {
+  if(listAll.value.length <= 0) {
+    return
+  }
+
   const header = Object.keys(listAll.value[0]).join(',') + '\n';
   const rows = listAll.value.map(item => {
-    if (item.data) {
-      item.data = formatDate(item.data);
-    }
     return Object.values(item).join(',');
   }).join('\n');
   csvContent.value = header + rows;
@@ -45,31 +46,27 @@ async function searchAll() {
 
 async function searchFn() {
   try {
-    const timestamp = Date.parse(search.value);
-   
-    if (isNaN(timestamp)) {
-      listAll.value = await db.dados
-          .where('marca')
-          .startsWithIgnoreCase(search.value)
-          .or('placa')
-          .startsWithIgnoreCase(search.value)
-          .toArray();
-      return;
-    }
+    const result = await db.dados
+      .where('data')
+      .startsWithIgnoreCase(search.value)
+      .or('marca')
+      .startsWithIgnoreCase(search.value)
+      .or('placa')
+      .startsWithIgnoreCase(search.value)
+      .toArray()
 
-    listAll.value = await db.dados
-          .where('data')
-          .aboveOrEqual(timestamp)
-          .toArray();
-
+    listAll.value = result
   } catch (error) {
     console.error(`Error while searching data: ${error.stack || error}`);
   }
 }
 
 
-const formatDate = (data) => {
-  return new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(new Date(data))
+const formatDate = (dateString) => {
+  const parts = dateString.split('/');
+  const formattedDate = `${parts[2]}-${parts[1]}-${parts[0]}`;
+  const dateObject = new Date(formattedDate);
+  return new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(dateObject)
 }
 
 </script>
@@ -84,12 +81,11 @@ const formatDate = (data) => {
     </div>
 
     <ul class="list" v-if="listAll.length > 0">
-      <span>Search</span>
       <li class="item-list" v-for="item in listAll" :key="item.id">
         <span class="marca">{{item.marca}}</span>
         <span class="placa">{{item.placa}}</span>
         <span class="qtd-peca">{{item.qtdPecas}}</span>
-        <span class="dataInput">{{formatDate(item.data)}}</span>
+        <span class="dataInput">{{ item.data }}</span>
       </li>
     </ul>
 

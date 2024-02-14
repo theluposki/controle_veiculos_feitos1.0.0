@@ -17,7 +17,6 @@ const csvContent = ref('');
 
 onMounted(async () => {
   listOfTheDay.value = await searchTodayData();
-
   dateOfTheDay.value = await getdateOfTheDay();
 
   if(dateOfTheDay.value.length > 0) {
@@ -30,11 +29,11 @@ const setViewDetails = (id) => {
 }
 
 async function getdateOfTheDay() {
-  const today = new Date();
+  const today =  new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(new Date());
   
   const results = await db.dados
     .where('data')
-    .aboveOrEqual(today.setHours(0, 0, 0, 0))
+    .equals(today)
     .toArray();
 
   return results.map(item => ({
@@ -66,7 +65,7 @@ const completeVehicle = async () => {
       marca: marca.value.toUpperCase(),
       placa: placa.value.toUpperCase(),
       qtdPecas: qtdPeca.value,
-      data: new Date().getTime(),
+      data: new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(new Date()),
     });
 
     listOfTheDay.value = await searchTodayData();
@@ -79,17 +78,20 @@ const completeVehicle = async () => {
 
 async function searchTodayData() {
   try {
-    const currentTimestamp = new Date().setHours(0, 0, 0, 0);
-    const results = await db.dados.where('data').aboveOrEqual(currentTimestamp).toArray();
-
+    const today = new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(new Date());
+    
+    const results = await db.dados.where('data').equals(today).toArray();
     return results;
   } catch (error) {
     console.error(`Error while searching data: ${error.stack || error}`);
   }
 }
 
-const formatDate = (data) => {
-  return new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(new Date(data))
+const formatDate = (dateString) => {
+  const parts = dateString.split('/');
+  const formattedDate = `${parts[2]}-${parts[1]}-${parts[0]}`;
+  const dateObject = new Date(formattedDate);
+  return new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(dateObject)
 }
 
 </script>
