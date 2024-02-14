@@ -4,16 +4,40 @@ import { db } from "../database/dexie.js";
 
 const search = ref("")
 const listAll = ref([])
+const csvContent = ref("");
 
 onMounted(async () => {
   listAll.value = await searchAll();
+  generateCSVContent();
 })
+
+////////
+
+function generateCSVContent() {
+  const header = Object.keys(listAll.value[0]).join(',') + '\n';
+  const rows = listAll.value.map(item => {
+    if (item.data) {
+      item.data = formatDate(item.data);
+    }
+    return Object.values(item).join(',');
+  }).join('\n');
+  csvContent.value = header + rows;
+}
+
+function shareOnWhatsApp() {
+  const mensagem = "Confira os dados do dia:\n\n\n" + csvContent.value;
+  window.open("https://api.whatsapp.com/send?text=" + encodeURIComponent(mensagem));
+}
+
+////////
+
+
 
 async function searchAll() {
   try {
     const results = await db.dados.toArray();
 
-    return results;
+    return results
   } catch (error) {
     console.error(`Error while searching data: ${error.stack || error}`);
   }
@@ -60,6 +84,7 @@ const formatDate = (data) => {
     </div>
 
     <ul class="list" v-if="listAll.length > 0">
+      <span>Search</span>
       <li class="item-list" v-for="item in listAll" :key="item.id">
         <span class="marca">{{item.marca}}</span>
         <span class="placa">{{item.placa}}</span>

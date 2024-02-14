@@ -12,15 +12,15 @@ const qtdPeca = ref(null);
 
 const listOfTheDay = ref([])
 
-const dataDoDia = ref([]);
+const dateOfTheDay = ref([]);
 const csvContent = ref('');
 
 onMounted(async () => {
   listOfTheDay.value = await searchTodayData();
 
-  dataDoDia.value = await getDataDoDia();
+  dateOfTheDay.value = await getdateOfTheDay();
 
-  if(dataDoDia.value.length > 0) {
+  if(dateOfTheDay.value.length > 0) {
     generateCSVContent();
   }
 })
@@ -29,12 +29,12 @@ const setViewDetails = (id) => {
   push(`/ViewDetails/${id}`)
 }
 
-async function getDataDoDia() {
-  const hoje = new Date();
+async function getdateOfTheDay() {
+  const today = new Date();
   
   const results = await db.dados
     .where('data')
-    .aboveOrEqual(hoje.setHours(0, 0, 0, 0))
+    .aboveOrEqual(today.setHours(0, 0, 0, 0))
     .toArray();
 
   return results.map(item => ({
@@ -47,8 +47,8 @@ async function getDataDoDia() {
 
 
 function generateCSVContent() {
-  const header = Object.keys(dataDoDia.value[0]).join(',') + '\n';
-  const rows = dataDoDia.value.map(item => Object.values(item).join(',')).join('\n');
+  const header = Object.keys(dateOfTheDay.value[0]).join(',') + '\n';
+  const rows = dateOfTheDay.value.map(item => Object.values(item).join(',')).join('\n');
   csvContent.value = header + rows;
 }
 
@@ -70,7 +70,7 @@ const completeVehicle = async () => {
     });
 
     listOfTheDay.value = await searchTodayData();
-    dataDoDia.value = await getDataDoDia();
+    dateOfTheDay.value = await getdateOfTheDay();
     generateCSVContent();
   } catch (error) {
     console.error("Ouve um erro ao finalizar veículo.")
