@@ -28,6 +28,12 @@ const setViewDetails = (id) => {
   push(`/ViewDetails/${id}`)
 }
 
+const clear = () => {
+  marca.value = null
+  placa.value = null
+  qtdPeca.value = null
+}
+
 async function getdateOfTheDay() {
   const today =  new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(new Date());
   
@@ -71,6 +77,7 @@ const completeVehicle = async () => {
     listOfTheDay.value = await searchTodayData();
     dateOfTheDay.value = await getdateOfTheDay();
     generateCSVContent();
+    clear();
   } catch (error) {
     console.error("Ouve um erro ao finalizar veículo.")
   }

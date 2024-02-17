@@ -4,13 +4,16 @@ import { useRoute, useRouter } from "vue-router";
 import { db } from "../database/dexie.js";
 
 const { params } = useRoute();
-const { back } = useRouter();
+const { back, push } = useRouter();
 
 const currentVehicle = ref({})
 
 onMounted(async () => {
   await getOneById();
 })
+
+
+const backPage = () => back();
 
 const getOneById = async () => {
   try {
@@ -19,6 +22,10 @@ const getOneById = async () => {
   } catch (error) {
     console.error(`Erro ao obter dados por ID ${id}:`, error);
   }
+}
+
+async function EditVehicleCompletion() {
+  push(`/EditVehicleCompletion/${Number(params.id)}`)
 }
 
 async function deleteDataById(id) {
@@ -35,24 +42,26 @@ async function deleteDataById(id) {
   }
 }
 
-const formatDate = (data) => {
-  return new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(new Date(data));
-}
-
-
 </script>
 
 <template>
   <div class="viewDetails">
+    
     <div class="info" v-if="currentVehicle.marca">
+      <div class="back">
+        <div class="btnBack" @click="backPage">
+          <i class="ri-arrow-left-line"></i>
+        </div>
+      </div>
+      
       <span>Marca: <b>{{ currentVehicle.marca }}</b></span><br>
       <span>Placa: <b>{{ currentVehicle.placa }}</b></span><br>
       <span>Quantidade de Peças: <b>{{ currentVehicle.qtdPecas }}</b></span><br>
-      <span>Data: <b>{{ formatDate(currentVehicle.data) }}</b></span><br>
+      <span>Data: <b>{{ currentVehicle.data }}</b></span><br>
     </div>
 
     <div class="actions">
-      <button class="btn btn-update">
+      <button class="btn btn-update" @click="EditVehicleCompletion">
         Editar
       </button>
       <button class="btn btn-del" @click="deleteDataById(currentVehicle.id)">
@@ -78,7 +87,12 @@ const formatDate = (data) => {
   justify-content: space-between;
 }
 
-.btn {
+.back {
+  width: 100%;
+  margin: 0 0 24px 0;
+}
+
+.btn, .btnBack {
   --height-inputs-buttons: 45px;
   --height-inputs: 60px;
   border: solid 1px transparent;
@@ -95,14 +109,30 @@ const formatDate = (data) => {
   background-color: var(--dark);
   color: var(--white);
 }
+.btnBack {
+  --width-height-back-buttons: 45px;
+  min-width: var(--width-height-back-buttons) !important;
+  max-width: var(--width-height-back-buttons) !important;
+  min-height: var(--width-height-back-buttons) !important;
+  max-height: var(--width-height-back-buttons) !important;
 
-.btn:hover {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background-color: var(--white);
+  color: var(--dark);
+  cursor: pointer;
+}
+
+
+.btn:hover, .btnBack:hover {
   transition: opacity ease .4s;
   opacity: .95;
   cursor: pointer;
 }
 
-.btn:active {
+.btn:active, .btnBack:active {
   scale: .95;
 }
 
