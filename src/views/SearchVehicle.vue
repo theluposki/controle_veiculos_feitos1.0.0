@@ -6,6 +6,8 @@ const search = ref("")
 const listAll = ref([])
 const csvContent = ref("");
 
+const count = ref(null);
+
 onMounted(async () => {
   listAll.value = await searchAll();
   generateCSVContent();
@@ -37,7 +39,7 @@ function shareOnWhatsApp() {
 async function searchAll() {
   try {
     const results = await db.dados.toArray();
-
+    count.value = results.length
     return results
   } catch (error) {
     console.error(`Error while searching data: ${error.stack || error}`);
@@ -55,18 +57,11 @@ async function searchFn() {
       .startsWithIgnoreCase(search.value)
       .toArray()
 
+    count.value = result.length
     listAll.value = result
   } catch (error) {
     console.error(`Error while searching data: ${error.stack || error}`);
   }
-}
-
-
-const formatDate = (dateString) => {
-  const parts = dateString.split('/');
-  const formattedDate = `${parts[2]}-${parts[1]}-${parts[0]}`;
-  const dateObject = new Date(formattedDate);
-  return new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(dateObject)
 }
 
 </script>
@@ -95,6 +90,10 @@ const formatDate = (dateString) => {
 
     <div class="btnShared" @click="shareOnWhatsApp">
       <i class="ri-share-forward-2-line"></i>
+    </div>
+
+    <div class="count">
+      {{  count }}
     </div>
   </div>
 </template>
@@ -282,6 +281,28 @@ const formatDate = (dateString) => {
   border-radius: 50%;
 
   font-size: 2.6rem;
+  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+}
+
+.count {
+  position: absolute;
+  bottom: 24px;
+  left: 24px;
+
+  background-color: var(--dark);
+  color: var(--primary);
+  --width-height-btnShared: 40px;
+  width: var(--width-height-btnShared);
+  height: var(--width-height-btnShared);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  font-size: 1.2rem;
+  font-weight: bold;
   box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
 }
 
